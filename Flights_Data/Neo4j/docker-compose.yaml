@@ -1,0 +1,36 @@
+services:
+  neo4j:
+    image: neo4j:5.25.1
+    container_name: neo4j
+    hostname: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/testpassword
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_server_directories_import=/import
+      - NEO4J_PLUGINS=["graph-data-science", "apoc"]
+      - NEO4J_dbms_memory_transaction_total_max=6GiB
+      - NEO4J_dbms_memory_heap_max__size=4GiB
+      - NEO4J_dbms_memory_pagecache_size=1GiB
+      - NEO4J_dbms_security_procedures_unrestricted=gds.*,apoc.*
+    volumes:
+      - ../import:/import
+      - ./init:/init
+      - ./plugins:/plugins
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    
+    
+    # -------------------------------------------------------------------
+    #
+    #  Since the startup scripts are not behaving as expected, 
+    #  manually run the following statement(s) once Neo4j is ready:
+    #
+    #    docker exec -it neo4j cypher-shell -u neo4j -p testpassword -f /init/init.cypher
+    #
+    # -------------------------------------------------------------------
+
+    # provide permissions for the init script: chmod 777 init
+
+    # http://localhost:7474/ for the GUI

@@ -1,0 +1,27 @@
+# This is the docker compose file for the ArangoDB sub-project
+
+services:
+  arangodb:
+    image: arangodb:latest
+    container_name: arangodb
+    environment:
+      - ARANGO_ROOT_PASSWORD=testpassword
+    ports:
+      - "8529:8529"
+    volumes:
+      - ./data:/var/lib/arangodb3
+      - ../import:/import
+      - ./init:/init
+
+    
+# To manually create the graph:
+# docker exec -it arangodb arangosh --server.endpoint=tcp://arangodb:8529 --server.username=root --server.password=testpassword --server.authentication=true --javascript.execute /init/setup_graph.js
+
+# To check that the graph db was created successfully:
+# docker exec -it arangodb arangosh --server.username=root --server.password=testpassword
+# db.airports.count(); // To check the number of nodes
+# db.flights.count();  // To check the number of edges
+
+
+# To access the GUI: http://localhost:8529 & use root as the 
+# username & the password listed above as the password
